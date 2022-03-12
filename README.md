@@ -1,6 +1,6 @@
 # Lokian.eth: A trading card game dapp featuring NFT cards, share, fight and breed mythical creatures in solidity blockchains.
 
-> Copyright belongs to [@tytzM17][https://github.com/tytzM17/Lokian.eth]
+> Copyright belongs to [@tytzM17](https://github.com/tytzM17/Lokian.eth)
 
 
 <!-- <img src="./screenshots/fighting_tab.png" alt="" width="1000em" height="500em">
