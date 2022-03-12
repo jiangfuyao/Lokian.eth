@@ -65,6 +65,23 @@ const CONTRACT_ADDRESS = '0x4DaBC26F9CEf30baE4a7915db4713c66e16DA5f0'
 // erc20 stable coin address = 0x962c22c4aaB626d4C864c1FC6633138C2969ba66, feb 2022
 // const ERC20_CONTRACT_ADDRESS = '0x962c22c4aaB626d4C864c1FC6633138C2969ba66'
 
+// Add network to Metamask
+
+const addNetwork = () =>{
+    window.ethereum.request({
+       method: 'wallet_addEthereumChain',
+       params: [{
+        chainId: '0x253',
+        chainName: 'Mandala TC7',
+        nativeCurrency: {
+          name: 'Acala',
+          symbol: 'ACA',
+          decimals: 18
+        },
+        rpcUrls: ['https://tc7-eth.aca-dev.network']
+       }]
+      })
+    }
 // Add background images in an array for easy access
 const bg = [bg0, bg1, bg2, bg3, bg4, bg5, bg6, bg7, bg8, bg9, bg10]
 
@@ -841,6 +858,7 @@ function App() {
               <button
                 className="rpgui-button"
                 onClick={() => {
+                  addNetwork()
                   deactivate()
                   setCryptomons([])
                   setMyCryptomons([])
