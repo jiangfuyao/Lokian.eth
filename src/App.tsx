@@ -26,17 +26,17 @@ import contrInterface from './abi.json' // Load contract json file
 // import erc1155Interface from './project.nft.abi.json'
 
 // Load all the background images for the 10 different Cryptomon types
-import bg0 from './sprites-copy/background/0.png'
-import bg1 from './sprites-copy/background/1.png'
-import bg2 from './sprites-copy/background/2.png'
-import bg3 from './sprites-copy/background/3.png'
-import bg4 from './sprites-copy/background/4.png'
-import bg5 from './sprites-copy/background/5.png'
-import bg6 from './sprites-copy/background/6.png'
-import bg7 from './sprites-copy/background/7.png'
-import bg8 from './sprites-copy/background/8.png'
-import bg9 from './sprites-copy/background/9.png'
-import bg10 from './sprites-copy/background/10.png'
+import bg0 from './sprites/background/0.png'
+import bg1 from './sprites/background/1.png'
+import bg2 from './sprites/background/2.png'
+import bg3 from './sprites/background/3.png'
+import bg4 from './sprites/background/4.png'
+import bg5 from './sprites/background/5.png'
+import bg6 from './sprites/background/6.png'
+import bg7 from './sprites/background/7.png'
+import bg8 from './sprites/background/8.png'
+import bg9 from './sprites/background/9.png'
+import bg10 from './sprites/background/10.png'
 
 // axios
 import axios, { AxiosResponse } from 'axios'
@@ -57,7 +57,7 @@ const connectorsByName: { [connectorName in ConnectorNames]: any } = {
 }
 
 // Contact deployment address
-const CONTRACT_ADDRESS = '0x091D8a60397f090E1a74232993e15E14b7831755'
+const CONTRACT_ADDRESS = '0x4DaBC26F9CEf30baE4a7915db4713c66e16DA5f0'
 
 // nft contract, feb 2022, 0x21e3d6d2a0b848F8C1F4cA18511498cA4952D370
 // const ERC1155_CONTRACT_ADDRESS = '0x21e3d6d2a0b848F8C1F4cA18511498cA4952D370'
@@ -287,7 +287,7 @@ function App() {
   // Get network coin price e.g. eth or glmr price
   useEffect(() => {
     const eth = 'ethereum'
-    const glmr = 'moonbeam'
+    const aca = 'acala'
     const url = `https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids=${eth}`
     let unmounted = false
     let source = axios.CancelToken.source()
@@ -501,7 +501,7 @@ function App() {
       <div className="monBox" style={bgStyle(mon?.monType)}>
         <img
           className="monImg"
-          src={require('./sprites-copy/' + (parseInt(mon?.species) + 1) + '.png')}
+          src={require('./sprites/' + (parseInt(mon?.species) + 1) + '.png')}
           alt={mon?.species}
         />
       </div>
@@ -629,7 +629,7 @@ function App() {
             <figcaption>
               <div className="monBox">
                 {' '}
-                <img className="monImg" src={require('./sprites-copy/0.png')} alt={'empty'} />
+                <img className="monImg" src={require('./sprites/0.png')} alt={'empty'} />
               </div>
             </figcaption>
           </figure>
