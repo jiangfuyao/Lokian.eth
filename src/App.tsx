@@ -47,6 +47,7 @@ import axios, { AxiosResponse } from 'axios'
 import { Web3Provider } from '@ethersproject/providers'
 import txSuccess from './utils/txSuccess'
 import txFail from './utils/txFail'
+import { getMandalaGasParams } from "./utils/mandala";
 
 enum ConnectorNames {
   Injected = 'Injected',
@@ -82,6 +83,10 @@ const addNetwork = () =>{
        }]
       })
     }
+
+// Network Host for query gas.
+const MANDALA_HOST = "https://tc7-eth.aca-dev.network";
+
 // Add background images in an array for easy access
 const bg = [bg0, bg1, bg2, bg3, bg4, bg5, bg6, bg7, bg8, bg9, bg10]
 
@@ -369,14 +374,31 @@ function App() {
       .catch((err) => toast.error(err))
   }
 
+  // CreateMon for test
+  async function createMon(species) {
+
+    const overrides = await getMandalaGasParams(MANDALA_HOST)
+    const contr = new Contract(CONTRACT_ADDRESS, contrInterface, library.getSigner(account))
+    const tx = await contr.createMon(species, BigInt(100000000000000000), true, overrides)
+    const receipt = await tx.wait()
+    if (receipt && receipt.status === 1) {
+      toast.success(`Success, Tx hash: ${receipt.transactionHash}`)
+      refreshMons()
+    }
+
+    if (receipt && receipt.status === 0) {
+      toast.error(`Error, Tx hash: ${receipt.transactionHash}`)
+    }
+  }
+
   // Function that buys a Cryptomon through a smart contract function
   async function buyMon(id, price) {
+    const gasOverrides = await getMandalaGasParams(MANDALA_HOST)
     const contr = new Contract(CONTRACT_ADDRESS, contrInterface, library.getSigner(account))
     // const weiPerEth = WeiPerEther as any
     const newprice = `${BigInt(price)}`
     // const newPrice =  BigNumber.from(parseEther(price)).toString();
-    let overrides = { value: newprice }
-    console.log(overrides);
+    let overrides = { value: newprice, gasLimit: gasOverrides.gasLimit, gasPrice: gasOverrides.gasPrice }
     
     const tx = await contr.buyMon(id, overrides)
     const recpt = await tx.wait()
@@ -390,9 +412,10 @@ function App() {
       toast.error('🦄 Price is 0')
       return
     }
+    const overrides = await getMandalaGasParams(MANDALA_HOST)
     const contr = new Contract(CONTRACT_ADDRESS, contrInterface, library.getSigner(account))
     // const tx = await contr.addForSale(id, `${BigInt(price * (WeiPerEther as any))}`)
-    const tx = await contr.addForSale(id, parseEther(price))
+    const tx = await contr.addForSale(id, parseEther(price), overrides)
     const receipt = await tx.wait()
     if (receipt && receipt.status === 1) {
       toast.success(`Success, Tx hash: ${receipt.transactionHash}`)
@@ -406,8 +429,9 @@ function App() {
 
   // Function that removes a Cryptomon from sale through a smart contract function
   async function removeFromSale(id) {
+    const overrides = await getMandalaGasParams(MANDALA_HOST)
     const contr = new Contract(CONTRACT_ADDRESS, contrInterface, library.getSigner(account))
-    const tx = await contr.removeFromSale(id)
+    const tx = await contr.removeFromSale(id, overrides)
     const recpt = await tx.wait()
     if (recpt && recpt.status === 1) {
       toast.success(`Success, Tx hash: ${recpt.transactionHash}`)
@@ -421,8 +445,10 @@ function App() {
 
   // Function that breeds 2 Cryptomons through a smart contract function
   async function breedMons(id1, id2) {
+    const overrides = await getMandalaGasParams(MANDALA_HOST)
+    console.log(overrides)
     const contr = new Contract(CONTRACT_ADDRESS, contrInterface, library.getSigner(account))
-    const tx = await contr.breedMons(id1, id2)
+    const tx = await contr.breedMons(id1, id2, overrides)
     const recpt = await tx.wait()
     if (recpt && recpt.status) {
       toast.success(`Success, Tx hash: ${recpt.transactionHash}`)
@@ -437,8 +463,9 @@ function App() {
 
   // Function that allows 2 Cryptomons to fight through a smart contract function
   async function fight(id1, id2) {
+    const overrides = await getMandalaGasParams(MANDALA_HOST)
     const contr = new Contract(CONTRACT_ADDRESS, contrInterface, library.getSigner(account))
-    const res = await contr.functions.fight(id1, id2)
+    const res = await contr.functions.fight(id1, id2, overrides)
     if (res && res.length) {
       const winner = BigNumber.from(res[0]._hex).toNumber()
       setWinner(winner)
@@ -453,8 +480,9 @@ function App() {
 
   // Function that starts sharing a Cryptomon to another address through a smart contract function
   async function startSharing(id, address) {
+    const overrides = await getMandalaGasParams(MANDALA_HOST)
     const contr = new Contract(CONTRACT_ADDRESS, contrInterface, library.getSigner(account))
-    const tx = await contr.startSharing(id, address)
+    const tx = await contr.startSharing(id, address, overrides)
     const recpt = await tx.wait()
     if (recpt && recpt.status) {
       toast.success(`Success, Tx hash: ${recpt.transactionHash}`)
@@ -468,8 +496,9 @@ function App() {
 
   // Function that stops sharing a Cryptomon with other addresses through a smart contrct function
   async function stopSharing(id) {
+    const overrides = await getMandalaGasParams(MANDALA_HOST)
     const contr = new Contract(CONTRACT_ADDRESS, contrInterface, library.getSigner(account))
-    const tx = await contr.stopSharing(id)
+    const tx = await contr.stopSharing(id, overrides)
     const recpt = await tx.wait()
     if (recpt && recpt.status) {
       toast.success(`Success, Tx hash: ${recpt.transactionHash}`)
@@ -560,6 +589,7 @@ function App() {
           type="button"
           style={{ float: 'right' }}
           onClick={() => addForSale(mon?.id, value)}
+          // onClick={() => createMon(value)} //test
         >
           Add for sale
         </button>
