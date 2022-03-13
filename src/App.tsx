@@ -887,7 +887,6 @@ function App() {
               <button
                 className="rpgui-button"
                 onClick={() => {
-                  addNetwork()
                   deactivate()
                   setCryptomons([])
                   setMyCryptomons([])
@@ -920,6 +919,7 @@ function App() {
                 onClick={() => {
                   setActivatingConnector(currentConnector)
                   activate(currentConnector)
+                  addNetwork()
                 }}
                 disabled={disabled}
                 key={name}
