@@ -306,11 +306,12 @@ function App() {
     refreshMons()
   }, [activatingConnector, connector])
 
-  // Get network coin price e.g. eth or glmr price
+  // Get network coin price e.g. eth
   useEffect(() => {
     const eth = 'ethereum'
     const aca = 'acala'
-    const url = `https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids=${eth}`
+    // const url = `https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids=${eth}`
+    const url = `https://api.coinstats.app/public/v1/coins/${aca}?currency=USD`
     let unmounted = false
     let source = axios.CancelToken.source()
 
@@ -446,7 +447,6 @@ function App() {
   // Function that breeds 2 Cryptomons through a smart contract function
   async function breedMons(id1, id2) {
     const overrides = await getMandalaGasParams(MANDALA_HOST)
-    console.log(overrides)
     const contr = new Contract(CONTRACT_ADDRESS, contrInterface, library.getSigner(account))
     const tx = await contr.breedMons(id1, id2, overrides)
     const recpt = await tx.wait()
@@ -463,9 +463,8 @@ function App() {
 
   // Function that allows 2 Cryptomons to fight through a smart contract function
   async function fight(id1, id2) {
-    const overrides = await getMandalaGasParams(MANDALA_HOST)
     const contr = new Contract(CONTRACT_ADDRESS, contrInterface, library.getSigner(account))
-    const res = await contr.functions.fight(id1, id2, overrides)
+    const res = await contr.fight(id1, id2)
     if (res && res.length) {
       const winner = BigNumber.from(res[0]._hex).toNumber()
       setWinner(winner)
